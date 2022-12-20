@@ -12,8 +12,8 @@ variables:
 ```bash
 MASTER_SERVER="..."  # hostname or IP of the master server 
 MASTER_PORT=0        # http port on master server
-PATH_GET="..."       # server path for GET method
-PATH_POST="..."      # server path for POST method
+PATH_GET="/foo"      # server path for GET method
+PATH_POST="/bar"     # server path for POST method
 INVENTORY_FILE="..." # path to ansible inventory file
 ```
 When running `install-server.sh` and `install-clients.sh` below, the
