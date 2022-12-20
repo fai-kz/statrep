@@ -22,7 +22,7 @@ contents of this config will be copied into appropriate source files.
 NOTE: This config is copied both into shell and python scripts, so it is
 mandatory that there are no spaces around `=`.
 
-
+The following install scripts should be run on your working host, where you have `ansible` installed.
 
 ## Server
 
