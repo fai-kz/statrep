@@ -1,0 +1,14 @@
+[Unit]
+Description=Systemd status report server
+Requires=postgresql.service
+After=postgresql.service
+
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/statrep-server
+Restart=always
+TimeoutRestartSec=3
+
+[Install]
+WantedBy=multi-user.target

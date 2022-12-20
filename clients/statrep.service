@@ -1,0 +1,6 @@
+[Unit]
+Description=FAI admins systemd status report
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/statrep

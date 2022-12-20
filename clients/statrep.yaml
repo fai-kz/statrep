@@ -1,0 +1,53 @@
+---
+- name: Install/update statrep reporter on all clients
+  hosts: "{{ targetgroup | default('statrep') }}"
+  become: true
+
+  tasks:
+
+  - name: Make sure curl is installed on all clients
+    ansible.builtin.package:
+      name: curl
+      state: present
+
+  - name: Copy systemd service file
+    copy:
+      src: statrep.service
+      dest: /etc/systemd/system
+      owner: root
+      group: root
+    notify:
+      - Reload daemon
+      - Restart
+
+  - name: Copy systemd timer file
+    copy:
+      src: statrep.timer
+      dest: /etc/systemd/system
+      owner: root
+      group: root
+    notify:
+      - Reload daemon
+      - Restart
+
+  - name: Copy the worker script
+    copy:
+      src: '../tmp/statrep.sh'
+      dest: /usr/local/bin/statrep
+      mode: u+rwx,go-rwx
+      owner: root
+      group: root
+    notify:
+      - Restart
+
+  handlers:
+    - name: Reload daemon
+      systemd:
+        daemon_reload: true
+
+    - name: Restart
+      systemd:
+        name: statrep.timer
+        enabled: true
+        state: restarted
+

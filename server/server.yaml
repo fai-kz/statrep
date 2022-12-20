@@ -1,0 +1,43 @@
+---
+- name: Install/update statrep server on master node
+  hosts: all
+  become: true
+
+  tasks:
+
+  - name: Make sure psycopg2 is installed
+    ansible.builtin.package:
+      name: python-psycopg2
+      state: present
+
+  - name: Copy systemd service file
+    copy:
+      src: statrep-server.service
+      dest: /etc/systemd/system
+      owner: root
+      group: root
+    notify:
+      - Reload daemon
+      - Restart service
+
+  - name: Copy the script
+    copy:
+      src: '../tmp/statrep-server.py'
+      dest: /usr/local/bin/statrep-server
+      mode: u+rwx,go-rwx
+      owner: root
+      group: root
+    notify:
+      - Restart service
+
+  handlers:
+    - name: Reload daemon
+      systemd:
+        daemon_reload: true
+
+    - name: Restart service
+      systemd:
+        name: statrep-server.service
+        enabled: true
+        state: restarted
+

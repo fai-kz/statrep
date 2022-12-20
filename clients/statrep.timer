@@ -1,0 +1,9 @@
+[Unit]
+Description=Timer for systemd status report
+
+[Timer]
+OnUnitActiveSec=10m
+OnBootSec=2m
+
+[Install]
+WantedBy=timers.target
