@@ -108,6 +108,8 @@ class StatusServer(BaseHTTPRequestHandler):
             if "journal" in data:
                 for r in data["journal"]:
                     msg = r["MESSAGE"]
+                    if isinstance(msg, list):
+                        msg = msg[0]
                     ind = msg.find('\n')
                     if ind > 0: msg = msg[:ind]
                     db.log_journal(data["host"], r["PRIORITY"], r["SYSLOG_IDENTIFIER"], msg, r["__REALTIME_TIMESTAMP"])
