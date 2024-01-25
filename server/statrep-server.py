@@ -50,7 +50,8 @@ class Database:
             s += "</table>\n"
 
         s += "<h3>Journal events</h3>\n"
-        self.db.execute("SELECT ts::timestamp(0), host, id, message, priority FROM journal WHERE ts > CURRENT_DATE - INTERVAL '3' DAY ORDER BY ts DESC;")
+        # self.db.execute("SELECT ts::timestamp(0), host, id, message, priority FROM journal WHERE ts > CURRENT_DATE - INTERVAL '3' DAY ORDER BY ts DESC;")
+        self.db.execute("SELECT ts::timestamp(0), host, id, message, priority FROM journal ORDER BY ts DESC LIMIT 100;")
         res = self.db.fetchall()
         if not res:
             s += "<p>None</p>\n"
