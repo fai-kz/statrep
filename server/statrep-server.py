@@ -30,9 +30,11 @@ class Database:
 
     def log_failed(self, host, unit):
         self.db.execute("INSERT INTO units (host, unit) VALUES (%s, %s)", (host, unit))
+        self.db.execute("DELETE from units WHERE ts < CURRENT_DATE - INTERVAL '10' DAY")
 
     def log_journal(self, host, p, idf, message, t):
         self.db.execute("INSERT INTO journal (host, priority, id, message, ts) VALUES (%s, %s, %s, %s, to_timestamp(%s/1000000.0))", (host, p, idf, message, t))
+        self.db.execute("DELETE from journal WHERE ts < CURRENT_DATE - INTERVAL '2' DAY")
 
     def log_hacker(self, address, method):
         self.db.execute("INSERT INTO hackers (address, method) VALUES (%s, %s)", (address, method))
@@ -51,7 +53,7 @@ class Database:
 
         s += "<h3>Journal events</h3>\n"
         # self.db.execute("SELECT ts::timestamp(0), host, id, message, priority FROM journal WHERE ts > CURRENT_DATE - INTERVAL '3' DAY ORDER BY ts DESC;")
-        self.db.execute("SELECT ts::timestamp(0), host, id, message, priority FROM journal ORDER BY ts DESC LIMIT 100;")
+        self.db.execute("SELECT ts::timestamp(0), host, id, message, priority FROM journal ORDER BY ts DESC LIMIT 1000;")
         res = self.db.fetchall()
         if not res:
             s += "<p>None</p>\n"
