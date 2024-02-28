@@ -27,18 +27,23 @@ if [ $? -ne 0 ]; then
 
     failed=$(systemctl --failed --no-pager --quiet --no-legend --plain | cut -d' ' -f1 | paste -sd " " -)
 
-    # join elements into ones string using commas and quotes
-    failed=$(join_by "\", \"" ${failed[@]})
-    failed="\"$failed\""
+    # sometimes, empty strings are reported when $? != 0, so checking explicitely if at least one failed unit is present
+    if [ "$failed" ]; then
 
-    autoheal=$(curl -X POST \
-         -H 'Content-Type: application/json' \
-         -d '{"host": "'$(hostname)'", "failed": ['"$failed"']}' \
-         "$url")
+        # join elements into ones string using commas and quotes
+        failed=$(join_by "\", \"" ${failed[@]})
+        failed="\"$failed\""
 
-    if [ $autoheal = "YES" ]; then
-        # try to reset failed units
-        systemctl reset-failed
+        autoheal=$(curl -X POST \
+             -H 'Content-Type: application/json' \
+             -d '{"host": "'$(hostname)'", "failed": ['"$failed"']}' \
+             "$url")
+
+        if [ $autoheal = "YES" ]; then
+            # try to reset failed units
+            systemctl reset-failed
+        fi
+
     fi
 fi
 
